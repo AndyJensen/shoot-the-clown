@@ -14,11 +14,12 @@
  * TODO: (Low Priority) Refactor ballRotate function.
  */
 import config from "../config.json"
+import { sharedData } from "./Data.js"
 export default {
   name: "PointBalls",
   data() {
     return {
-      activeBall: 0,
+      sharedData,
       points: [
         { value: 10 },
         { value: 20 },
@@ -37,7 +38,7 @@ export default {
   },
   methods: {
     ballRotate: function () {
-      switch (this.activeBall) {
+      switch (sharedData.activeBall) {
         case 0:
           this.pointToggle(1, 9)
           break
@@ -70,10 +71,12 @@ export default {
           break
       }
 
-      if (this.activeBall + 1 != 9) {
-        this.activeBall = this.activeBall + 1
+      sharedData.score = this.points[sharedData.activeBall].value
+
+      if (sharedData.activeBall + 1 != 9) {
+        sharedData.activeBall = sharedData.activeBall + 1
       } else {
-        this.activeBall = 0
+        sharedData.activeBall = 0
       }
 
       return true
@@ -85,6 +88,9 @@ export default {
       document
         .querySelector(`#ball-holder :nth-child(${off})`)
         .classList.remove("active")
+    },
+    getCurrentPoints: function () {
+      return sharedData.activeBall
     }
   }
 }
@@ -95,21 +101,19 @@ export default {
   display: flex;
 }
 .ball {
-  width: 100px;
-  height: 100px;
-  border-radius: 100px;
-  border: 3px solid #303030;
-  background: #382f23;
+  width: 115px;
+  height: 115px;
+  background: url("../assets/ball_inactive.png") no-repeat center;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 25px;
+  font-size: 80px;
   font-weight: bold;
-  color: #ffffff;
+  color: #50473c;
   margin: 10px;
 }
 .active {
-  background: #d1ce0e;
-  color: #000000;
+  background: url("../assets/ball_active.png") no-repeat center;
+  color: #493926;
 }
 </style>
