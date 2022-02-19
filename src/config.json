@@ -1,3 +1,5 @@
 {
-    "ballTimer": 100
+  "ballTimer": 100,
+  "missShotValue": 13,
+  "missShotCeiling": 20
 }

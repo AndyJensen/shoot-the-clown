@@ -8,6 +8,9 @@ export default {
   props: ["color", "status"],
   mounted() {
     this.$el.classList.add(`${this.color}_${this.status}`)
+  },
+  updated() {
+    this.$el.classList.add(`${this.color}_${this.status}`)
   }
 }
 </script>
