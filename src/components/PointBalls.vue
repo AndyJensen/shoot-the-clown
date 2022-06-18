@@ -97,23 +97,71 @@ export default {
 </script>
 
 <style scoped>
+/* your mom */
 #ball-holder {
   display: flex;
 }
+#ball-holder div:nth-child(1) {
+  position: absolute;
+  top: 143px;
+  left: 95px;
+}
+#ball-holder div:nth-child(2) {
+  position: absolute;
+  top: 75px;
+  left: 135px;
+}
+#ball-holder div:nth-child(3) {
+  position: absolute;
+  top: 30px;
+  left: 205px;
+}
+#ball-holder div:nth-child(4) {
+  position: absolute;
+  top: 12px;
+  left: 283px;
+}
+#ball-holder div:nth-child(5) {
+  position: absolute;
+  top: 9px;
+  left: 364px;
+}
+#ball-holder div:nth-child(6) {
+  position: absolute;
+  top: 12px;
+  left: 454px;
+}
+#ball-holder div:nth-child(7) {
+  position: absolute;
+  top: 37px;
+  left: 540px;
+}
+#ball-holder div:nth-child(8) {
+  position: absolute;
+  top: 90px;
+  left: 600px;
+}
+#ball-holder div:nth-child(9) {
+  position: absolute;
+  top: 163px;
+  left: 630px;
+}
 .ball {
-  width: 115px;
-  height: 115px;
+  width: var(--ball-size);
+  height: var(--ball-size);
   background: url("../assets/ball_inactive.png") no-repeat center;
+  background-size: var(--ball-size) var(--ball-size);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 80px;
+  font-size: 30px;
   font-weight: bold;
   color: #50473c;
   margin: 10px;
 }
 .active {
   background: url("../assets/ball_active.png") no-repeat center;
+  background-size: var(--ball-size) var(--ball-size);
   color: #493926;
 }
 </style>
