@@ -1,5 +1,5 @@
 <template>
-  <div id="scoreboard">Current Score: {{ sharedData.totalScore }}</div>
+  <div id="scoreboard">{{ sharedData.totalScore }}</div>
 </template>
 
 <script>

@@ -1,7 +1,16 @@
 <template>
   <div>
+    <div id="logo" style="position: absolute;top:20px;left:0px;z-index:4;"><img src="./assets/shoot_the_clown.png" style="height: 150px; width: 200px;" /></div>
+    <div id="scoreboard">
+      <Scoreboard />
+    </div>
     <div id="balls-juggle">
       <PointBalls />
+    </div>
+    <div id="targets">
+      <Target color="eye" status="active" class="left-eye" />
+      <Target color="eye" status="active" class="right-eye" />
+      <Target color="nose" status="active" class="nose" />
     </div>
     <div id="left-clown"></div>
     <div id="right-clown"></div>
@@ -13,17 +22,17 @@
 
 <script>
 import PointBalls from "./components/PointBalls.vue"
-// import Scoreboard from "./components/Scoreboard.vue"
-// import Target from "./components/Target.vue"
+import Scoreboard from "./components/Scoreboard.vue"
+import Target from "./components/Target.vue"
 import { sharedData } from "./components/Data.js"
 import config from "./config.json"
 
 export default {
   name: "App",
   components: {
-    PointBalls
-    // Scoreboard,
-    // Target
+    PointBalls,
+    Scoreboard,
+    Target
   },
   data() {
     return {
@@ -133,5 +142,34 @@ body {
   bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
+}
+#targets {
+  z-index: 3;
+  width: 824px;
+  height: 630px;
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* decoration */
+#scoreboard {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 1;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 10px;
+}
+/* targets */
+.left-eye {
+  position: absolute; top: 290px; left: 325px;
+}
+.right-eye {
+  position: absolute; top: 290px; left: 425px;
+}
+.nose {
+  position: absolute; top: 332px; left: 376px;
 }
 </style>
