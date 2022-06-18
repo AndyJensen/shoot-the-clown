@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div id="logo" style="position: absolute;top:20px;left:0px;z-index:4;"><img src="./assets/shoot_the_clown.png" style="height: 150px; width: 200px;" /></div>
+    <div id="logo">
+      <img src="./assets/shoot_the_clown.png" id="logo-image" alt="" />
+    </div>
     <div id="scoreboard">
       <Scoreboard />
     </div>
@@ -162,14 +164,30 @@ body {
   font-weight: bold;
   font-size: 10px;
 }
+#logo {
+  position: absolute;
+  top: 20px;
+  left: 0px;
+  z-index: 4;
+}
+#logo-image {
+  height: 150px;
+  width: 200px;
+}
 /* targets */
 .left-eye {
-  position: absolute; top: 290px; left: 325px;
+  position: absolute;
+  top: 290px;
+  left: 325px;
 }
 .right-eye {
-  position: absolute; top: 290px; left: 425px;
+  position: absolute;
+  top: 290px;
+  left: 425px;
 }
 .nose {
-  position: absolute; top: 332px; left: 376px;
+  position: absolute;
+  top: 332px;
+  left: 376px;
 }
 </style>
