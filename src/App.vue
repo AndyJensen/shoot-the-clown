@@ -1,49 +1,29 @@
 <template>
   <div>
-    <PointBalls />
-    <Scoreboard />
-    <button v-on:click="updateScore()">Add Selected Ball Point Value</button>
-    <br /><br />
-    <hr />
-    <br />
-    <button v-on:click="targetShoot(1)">Shoot out the Red Target</button>
-    <button v-on:click="targetShoot(2)">Shoot out the Yellow Target</button>
-    <button v-on:click="targetShoot(3)">Shoot out the Blue Target</button>
-    <div style="display: flex; flex-wrap: wrap">
-      <Target v-bind:status="target[1]" color="red" />
-      <Target v-bind:status="target[2]" color="yellow" />
-      <Target v-bind:status="target[3]" color="blue" />
+    <div id="balls-juggle">
+      <PointBalls />
     </div>
-    <hr />
-    <br />
-    <div style="display: flex; flex-wrap: wrap">
-      <Target status="active" color="red" />
-      <Target status="inactive" color="red" />
-      <Target status="active" color="yellow" />
-      <Target status="inactive" color="yellow" />
-      <Target status="active" color="blue" />
-      <Target status="inactive" color="blue" />
-      <Target status="active" color="nose" />
-      <Target status="inactive" color="nose" />
-      <Target status="active" color="eye" />
-      <Target status="inactive" color="eye" />
-    </div>
+    <div id="left-clown"></div>
+    <div id="right-clown"></div>
+    <div id="eric-the-clown"></div>
+    <div id="left-drape"></div>
+    <div id="right-drape"></div>
   </div>
 </template>
 
 <script>
 import PointBalls from "./components/PointBalls.vue"
-import Scoreboard from "./components/Scoreboard.vue"
-import Target from "./components/Target.vue"
+// import Scoreboard from "./components/Scoreboard.vue"
+// import Target from "./components/Target.vue"
 import { sharedData } from "./components/Data.js"
 import config from "./config.json"
 
 export default {
   name: "App",
   components: {
-    PointBalls,
-    Scoreboard,
-    Target
+    PointBalls
+    // Scoreboard,
+    // Target
   },
   data() {
     return {
@@ -79,9 +59,79 @@ export default {
 </script>
 
 <style>
+:root {
+  --ball-size: 54px;
+}
+html,
+body {
+  margin: 0px;
+  background: #803c3c;
+  /* url("./assets/background.png"); */
+  background-size: 1920px 1080px;
+  height: 1080px;
+  width: 1920px;
+  overflow: hidden;
+}
 #app {
   font-family: Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+/* clowns */
+#left-clown {
+  width: 198px;
+  height: 297px;
+  background: url("./assets/clown_left.png") center/198px 297px no-repeat;
+  position: absolute;
+  bottom: -3px;
+  left: 0px;
+  z-index: 1;
+}
+#right-clown {
+  width: 196px;
+  height: 280px;
+  background: url("./assets/clown_right.png") center/196px 280px no-repeat;
+  position: absolute;
+  bottom: -3px;
+  right: 0px;
+  z-index: 1;
+}
+#eric-the-clown {
+  width: 824px;
+  height: 600px;
+  background: url("./assets/clown.png") center/824px 600px no-repeat;
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* who shot the drapes */
+#left-drape {
+  width: 226px;
+  height: 1080px;
+  background: url("./assets/curtain_left.png") center/226px 1080px no-repeat;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 0;
+}
+#right-drape {
+  width: 226px;
+  height: 1080px;
+  background: url("./assets/curtain_right.png") center/226px 1080px no-repeat;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 0;
+}
+/* balls */
+#balls-juggle {
+  z-index: 3;
+  width: 824px;
+  height: 630px;
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>
