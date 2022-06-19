@@ -6,13 +6,45 @@
     <div id="scoreboard">
       <Scoreboard />
     </div>
+    <div id="music">
+      Music: {{ sharedData.music }} <br /><br />~ through 9 "aim at target"
+      <br />SHIFT is the trigger <br />Enter toggles music <br />Score is top
+      left (temp)
+    </div>
     <div id="balls-juggle">
       <PointBalls />
     </div>
     <div id="targets">
-      <Target color="eye" status="active" class="left-eye" />
-      <Target color="eye" status="active" class="right-eye" />
-      <Target color="nose" status="active" class="nose" />
+      <Target color="eye" v-bind:status="target.leftEye" class="left-eye" />
+      <Target color="eye" v-bind:status="target.rightEye" class="right-eye" />
+      <Target color="nose" v-bind:status="target.nose" class="nose" />
+      <Target
+        color="yellow"
+        v-bind:status="target.hatYellowLeft"
+        class="hat-yellow-left"
+      />
+      <Target
+        color="yellow"
+        v-bind:status="target.hatYellowMid"
+        class="hat-yellow-mid"
+      />
+      <Target
+        color="yellow"
+        v-bind:status="target.hatYellowRight"
+        class="hat-yellow-right"
+      />
+      <Target
+        color="blue"
+        v-bind:status="target.hatBlueLeft"
+        class="hat-blue-left"
+      />
+      <Target
+        color="blue"
+        v-bind:status="target.hatBlueRight"
+        class="hat-blue-right"
+      />
+      <Target color="red" v-bind:status="target.redLeft" class="red-left" />
+      <Target color="red" v-bind:status="target.redRight" class="red-right" />
     </div>
     <div id="left-clown"></div>
     <div id="right-clown"></div>
@@ -28,6 +60,10 @@ import Scoreboard from "./components/Scoreboard.vue"
 import Target from "./components/Target.vue"
 import { sharedData } from "./components/Data.js"
 import config from "./config.json"
+import LaughingMan from "./assets/laughing_man.mp3"
+import ShotWhiff from "./assets/shot-whiff.mp3"
+import ShotHit from "./assets/shot-hit.mp3"
+import ShotFart from "./assets/shot-fart.mp3"
 
 export default {
   name: "App",
@@ -40,13 +76,97 @@ export default {
     return {
       sharedData,
       target: {
-        1: "active",
-        2: "active",
-        3: "active"
+        leftEye: "active",
+        rightEye: "active",
+        nose: "active",
+        hatYellowLeft: "active",
+        hatYellowMid: "active",
+        hatYellowRight: "active",
+        hatBlueLeft: "active",
+        hatBlueRight: "active",
+        redLeft: "active",
+        redRight: "active"
       }
     }
   },
+  mounted() {
+    let backgroundMusic = new Audio(LaughingMan)
+    window.addEventListener("keypress", (e) => {
+      switch (e.key) {
+        case "Enter":
+          this.musicToggle(backgroundMusic)
+          break
+        case "~":
+          this.targetShoot("leftEye")
+          this.shotHandler("hit")
+          break
+        case "!":
+          this.targetShoot("rightEye")
+          this.shotHandler("miss")
+          break
+        case "@":
+          this.targetShoot("nose")
+          this.shotHandler("forcedMiss")
+          break
+        case "#":
+          this.targetShoot("hatYellowLeft")
+          this.shotHandler("hit")
+          break
+        case "$":
+          this.targetShoot("hatYellowMid")
+          this.shotHandler("hit")
+          break
+        case "%":
+          this.targetShoot("hatYellowRight")
+          this.shotHandler("hit")
+          break
+        case "^":
+          this.targetShoot("hatBlueLeft")
+          this.shotHandler("hit")
+          break
+        case "&":
+          this.targetShoot("hatBlueRight")
+          this.shotHandler("hit")
+          break
+        case "*":
+          this.targetShoot("redLeft")
+          this.shotHandler("hit")
+          break
+        case "(":
+          this.targetShoot("redRight")
+          this.shotHandler("hit")
+          break
+        default:
+          break
+      }
+    })
+  },
   methods: {
+    shotHandler: function (action) {
+      let shotHit = new Audio(ShotHit)
+      let shotMiss = new Audio(ShotWhiff)
+      let shotFart = new Audio(ShotFart)
+      switch (action) {
+        case "hit":
+          shotHit.play()
+          break
+        case "miss":
+          shotMiss.play()
+          break
+        case "forcedMiss":
+          shotFart.play()
+          break
+      }
+    },
+    musicToggle: function (audio) {
+      if (sharedData.music) {
+        audio.pause()
+        sharedData.music = false
+      } else {
+        audio.play()
+        sharedData.music = true
+      }
+    },
     updateScore: function () {
       sharedData.totalScore += sharedData.score
       return true
@@ -64,6 +184,7 @@ export default {
       ) {
         return true
       }
+      alert("miss shot unit activated")
     }
   }
 }
@@ -72,6 +193,7 @@ export default {
 <style>
 :root {
   --ball-size: 54px;
+  --target-size: 60px;
 }
 html,
 body {
@@ -96,7 +218,7 @@ body {
   position: absolute;
   bottom: -3px;
   left: 0px;
-  z-index: 1;
+  z-index: 3;
 }
 #right-clown {
   width: 196px;
@@ -105,7 +227,7 @@ body {
   position: absolute;
   bottom: -3px;
   right: 0px;
-  z-index: 1;
+  z-index: 3;
 }
 #eric-the-clown {
   width: 824px;
@@ -124,7 +246,7 @@ body {
   position: absolute;
   top: 0px;
   left: 0px;
-  z-index: 0;
+  z-index: 2;
 }
 #right-drape {
   width: 226px;
@@ -133,11 +255,11 @@ body {
   position: absolute;
   top: 0px;
   right: 0px;
-  z-index: 0;
+  z-index: 2;
 }
 /* balls */
 #balls-juggle {
-  z-index: 3;
+  z-index: 1;
   width: 824px;
   height: 630px;
   position: absolute;
@@ -146,7 +268,7 @@ body {
   transform: translateX(-50%);
 }
 #targets {
-  z-index: 3;
+  z-index: 1;
   width: 824px;
   height: 630px;
   position: absolute;
@@ -159,7 +281,16 @@ body {
   position: absolute;
   top: 5px;
   left: 5px;
-  z-index: 1;
+  z-index: 4;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 10px;
+}
+#music {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 4;
   color: #ffffff;
   font-weight: bold;
   font-size: 10px;
@@ -177,17 +308,52 @@ body {
 /* targets */
 .left-eye {
   position: absolute;
-  top: 290px;
-  left: 325px;
+  top: 285px;
+  left: 322px;
 }
 .right-eye {
   position: absolute;
-  top: 290px;
-  left: 425px;
+  top: 285px;
+  left: 422px;
 }
 .nose {
   position: absolute;
   top: 332px;
-  left: 376px;
+  left: 372px;
+}
+.hat-yellow-left {
+  position: absolute;
+  top: 140px;
+  left: 260px;
+}
+.hat-yellow-mid {
+  position: absolute;
+  top: 185px;
+  left: 365px;
+}
+.hat-yellow-right {
+  position: absolute;
+  top: 130px;
+  left: 455px;
+}
+.hat-blue-left {
+  position: absolute;
+  top: 210px;
+  left: 210px;
+}
+.hat-blue-right {
+  position: absolute;
+  top: 192px;
+  left: 520px;
+}
+.red-left {
+  position: absolute;
+  top: 340px;
+  left: 195px;
+}
+.red-right {
+  position: absolute;
+  top: 340px;
+  left: 540px;
 }
 </style>
