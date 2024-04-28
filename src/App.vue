@@ -1,50 +1,84 @@
 <template>
+  <div id="gameOver" v-if="gameOver">
+    GAME OVER<br />YOU STINKY LOSER<br />FINAL SCORE:
+    {{ sharedData.totalScore }}
+  </div>
   <div>
     <div id="logo">
       <img src="./assets/shoot_the_clown.png" id="logo-image" alt="" />
     </div>
     <div id="scoreboard">
-      <Scoreboard />
+      {{ sharedData.totalScore }} - Shots Remaining:
+      {{ shotsRemaining }}
     </div>
     <div id="music">
-      Music: {{ sharedData.music }} <br /><br />~ through 9 "aim at target"
-      <br />SHIFT is the trigger <br />Enter toggles music <br />Score is top
-      left (temp)
+      Music: {{ sharedData.music }} <br /><br />Mouse to aim/fire<br />Enter
+      toggles music <br />Score is top left (temp)
     </div>
     <div id="balls-juggle">
       <PointBalls />
     </div>
     <div id="targets">
-      <Target color="eye" v-bind:status="target.leftEye" class="left-eye" />
-      <Target color="eye" v-bind:status="target.rightEye" class="right-eye" />
-      <Target color="nose" v-bind:status="target.nose" class="nose" />
+      <Target
+        color="eye"
+        v-bind:status="target.leftEye"
+        class="left-eye"
+        v-on:click="clickHandler('leftEye')"
+      />
+      <Target
+        color="eye"
+        v-bind:status="target.rightEye"
+        class="right-eye"
+        v-on:click="clickHandler('rightEye')"
+      />
+      <Target
+        color="nose"
+        v-bind:status="target.nose"
+        class="nose"
+        v-on:click="clickHandler('nose')"
+      />
       <Target
         color="yellow"
         v-bind:status="target.hatYellowLeft"
         class="hat-yellow-left"
+        v-on:click="clickHandler('hatYellowLeft')"
       />
       <Target
         color="yellow"
         v-bind:status="target.hatYellowMid"
         class="hat-yellow-mid"
+        v-on:click="clickHandler('hatYellowMid')"
       />
       <Target
         color="yellow"
         v-bind:status="target.hatYellowRight"
         class="hat-yellow-right"
+        v-on:click="clickHandler('hatYellowRight')"
       />
       <Target
         color="blue"
         v-bind:status="target.hatBlueLeft"
         class="hat-blue-left"
+        v-on:click="clickHandler('hatBlueLeft')"
       />
       <Target
         color="blue"
         v-bind:status="target.hatBlueRight"
         class="hat-blue-right"
+        v-on:click="clickHandler('hatBlueRight')"
       />
-      <Target color="red" v-bind:status="target.redLeft" class="red-left" />
-      <Target color="red" v-bind:status="target.redRight" class="red-right" />
+      <Target
+        color="red"
+        v-bind:status="target.redLeft"
+        class="red-left"
+        v-on:click="clickHandler('redLeft')"
+      />
+      <Target
+        color="red"
+        v-bind:status="target.redRight"
+        class="red-right"
+        v-on:click="clickHandler('redRight')"
+      />
     </div>
     <div id="left-clown"></div>
     <div id="right-clown"></div>
@@ -55,8 +89,9 @@
 </template>
 
 <script>
+//TODO: pre-load images so state change isn't forced to load...maybe sprite it? (low priority)
+//TODO: make the shot sprites darker to better indicate they've been hit
 import PointBalls from "./components/PointBalls.vue"
-import Scoreboard from "./components/Scoreboard.vue"
 import Target from "./components/Target.vue"
 import { sharedData } from "./components/Data.js"
 import config from "./config.json"
@@ -69,7 +104,6 @@ export default {
   name: "App",
   components: {
     PointBalls,
-    Scoreboard,
     Target
   },
   data() {
@@ -85,78 +119,66 @@ export default {
         hatBlueLeft: "active",
         hatBlueRight: "active",
         redLeft: "active",
-        redRight: "active"
+        redRight: "active",
+        void: "inactive"
+      },
+      gameOver: false,
+      shotsRemaining: 12
+    }
+  },
+  watch: {
+    shotsRemaining(newV) {
+      if (newV == 0 && this.gameOver == false) {
+        this.gameOver = true
       }
     }
   },
   mounted() {
     let backgroundMusic = new Audio(LaughingMan)
-    window.addEventListener("keypress", (e) => {
-      switch (e.key) {
-        case "Enter":
-          this.musicToggle(backgroundMusic)
-          break
-        case "~":
-          this.targetShoot("leftEye")
-          this.shotHandler("hit")
-          break
-        case "!":
-          this.targetShoot("rightEye")
-          this.shotHandler("miss")
-          break
-        case "@":
-          this.targetShoot("nose")
-          this.shotHandler("forcedMiss")
-          break
-        case "#":
-          this.targetShoot("hatYellowLeft")
-          this.shotHandler("hit")
-          break
-        case "$":
-          this.targetShoot("hatYellowMid")
-          this.shotHandler("hit")
-          break
-        case "%":
-          this.targetShoot("hatYellowRight")
-          this.shotHandler("hit")
-          break
-        case "^":
-          this.targetShoot("hatBlueLeft")
-          this.shotHandler("hit")
-          break
-        case "&":
-          this.targetShoot("hatBlueRight")
-          this.shotHandler("hit")
-          break
-        case "*":
-          this.targetShoot("redLeft")
-          this.shotHandler("hit")
-          break
-        case "(":
-          this.targetShoot("redRight")
-          this.shotHandler("hit")
-          break
-        default:
-          break
+    window.addEventListener("keydown", (e) => {
+      if (e.key == "Enter") {
+        this.musicToggle(backgroundMusic)
+        return
+      }
+    })
+    window.addEventListener("click", (e) => {
+      if (e.target.classList[0] != "ball") {
+        this.shotHandler("miss", null)
       }
     })
   },
   methods: {
-    shotHandler: function (action) {
+    clickHandler: function (loc) {
+      this.shotHandler("hit", loc)
+    },
+    codeCheck: function (value, event) {
+      if (event.code == value && event.shiftKey === true) {
+        return true
+      }
+    },
+    shotHandler: function (action, location) {
+      if (this.shotsRemaining <= 0) {
+        return
+      }
       let shotHit = new Audio(ShotHit)
       let shotMiss = new Audio(ShotWhiff)
       let shotFart = new Audio(ShotFart)
-      switch (action) {
-        case "hit":
-          shotHit.play()
-          break
-        case "miss":
-          shotMiss.play()
-          break
-        case "forcedMiss":
-          shotFart.play()
-          break
+      if (this.targetStatus(location)) {
+        switch (action) {
+          case "hit":
+            shotHit.play()
+            break
+          case "miss":
+            shotMiss.play()
+            break
+          case "forcedMiss":
+            shotFart.play()
+            break
+        }
+      } else {
+        shotMiss.play()
       }
+      this.shotsRemaining--
     },
     musicToggle: function (audio) {
       if (sharedData.music) {
@@ -171,10 +193,14 @@ export default {
       sharedData.totalScore += sharedData.score
       return true
     },
-    targetShoot: function (id) {
+    targetStatus: function (id) {
+      // TODO: refactor so that a forced miss is reflected accurately in audio
       if (this.target[id] == "active" && this.missShotUnit()) {
         this.updateScore()
         this.target[id] = "inactive"
+        return true
+      } else {
+        return false
       }
     },
     missShotUnit: function () {
@@ -184,7 +210,6 @@ export default {
       ) {
         return true
       }
-      alert("miss shot unit activated")
     }
   }
 }
@@ -355,5 +380,18 @@ body {
   position: absolute;
   top: 340px;
   left: 540px;
+}
+#gameOver {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 80%);
+  color: #ffffff;
+  font-size: 100px;
+  z-index: 20;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 </style>
