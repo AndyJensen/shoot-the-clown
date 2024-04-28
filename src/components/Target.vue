@@ -19,6 +19,7 @@ export default {
 .ball {
   height: var(--target-size);
   width: var(--target-size);
+  border-radius:50px;
 }
 .red_active {
   background: url("../assets/red_active.png") no-repeat center;
