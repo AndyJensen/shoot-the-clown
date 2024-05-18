@@ -128,7 +128,7 @@ export default {
   },
   watch: {
     shotsRemaining(newV) {
-      if (newV == 0 && this.gameOver == false) {
+      if (newV == 0 && !this.gameOver) {
         this.gameOver = true
       }
     }
@@ -138,7 +138,6 @@ export default {
     window.addEventListener("keydown", (e) => {
       if (e.key == "Enter") {
         this.musicToggle(backgroundMusic)
-        return
       }
     })
     window.addEventListener("click", (e) => {
